@@ -17,6 +17,8 @@ Limitations
 -----------
 
 Application only works on Android version 4.0 and higher. Tested only on Nexus 4 and Nexus 7 on Android 4.4.
+Error handling is simple - logging to ADB and toast messages.
+If you click on an image that is not yet loaded you'll get empty screen - there is no notification from downloader to image view activity.
 
 
 Disclaimer
