@@ -6,10 +6,6 @@ import android.content.Context;
 import net.ninjacat.pop500.config.Injector;
 import net.ninjacat.pop500.logger.Logger;
 
-/**
- * User: ovoronin
- * Date: 05/10/12
- */
 public class PxApp extends Application {
 
     private static PxApp instance;

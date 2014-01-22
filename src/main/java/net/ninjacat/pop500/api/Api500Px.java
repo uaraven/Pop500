@@ -15,9 +15,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
-/**
- * Created on 21/01/14.
- */
 public class Api500Px {
     public static final int PAGE_SIZE = 40;
     private Set<Integer> pagesInProgress;

@@ -3,10 +3,6 @@ package net.ninjacat.pop500.list;
 import android.content.Context;
 import android.view.View;
 
-/**
- * User: ovoronin
- * Date: 05/10/12
- */
 public class ListViewUtils {
 
     /**

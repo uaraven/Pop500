@@ -10,10 +10,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-/**
- * User: raven
- * Date: 05.10.12
- */
 public class JsonDownloader implements Runnable {
 
     private final String source;

@@ -5,9 +5,6 @@ import android.os.Parcelable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * Created on 21/01/14.
- */
 public class Photo implements Parcelable {
 
     public static final Creator<Photo> CREATOR = new Creator<Photo>() {

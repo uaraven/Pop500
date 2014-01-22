@@ -1,9 +1,5 @@
 package net.ninjacat.pop500.api.net;
 
-/**
- * User: raven
- * Date: 05.10.12
- */
 public class Access {
     private static final String API_KEY = "NzdseD03bWiGOFKxKeFjlYOmtsnI1qn1JSFdZOkJ";
 

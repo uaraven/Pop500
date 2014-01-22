@@ -20,20 +20,14 @@ import net.ninjacat.pop500.list.ListViewUtils;
 import net.ninjacat.pop500.list.UiHolder;
 
 
-/**
- * Created on 21/01/14.
- */
 public class PopularStreamAdapter extends BaseAdapter implements StreamUpdateListener, HolderCreator<Integer> {
 
     private final StreamController controller;
     private final Context context;
     private Handler uiThreadHandler;
-//    private final Point tileSize;
 
     public PopularStreamAdapter(Injector injector) {
         context = injector.get(Context.class);
-
-//        tileSize = getTileSize(windowManager);
 
         controller = createController(injector);
 
@@ -84,19 +78,6 @@ public class PopularStreamAdapter extends BaseAdapter implements StreamUpdateLis
         StreamController controller = injector.get(StreamController.class);
         controller.setListener(this);
         return controller;
-    }
-
-    private Point getTileSize(WindowManager windowManager) {
-        Point pt = new Point();
-        windowManager.getDefaultDisplay().getSize(pt);
-
-        if (pt.x > pt.y) {
-            pt.x = pt.x / 2;
-            pt.y = pt.x;
-        } else {
-            pt.y = pt.x * 3 / 4;
-        }
-        return pt;
     }
 
     private class PhotoHolder extends UiHolder<Integer> {

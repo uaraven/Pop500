@@ -5,9 +5,6 @@ import javax.inject.Provider;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * Created on 21/01/14.
- */
 public class ExecutorServiceProvider implements Provider<ExecutorService> {
 
     private static final int MAX_WORKER_THREADS = 4;

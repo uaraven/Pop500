@@ -3,4 +3,7 @@
     <string name="app_name">500px Popular</string>
     <string name="photo_desc">Photo</string>
     <string name="back_to_top">Back to top</string>
+
+    <string name="json_failed">Failed to download photo stream</string>
+    <string name="image_failed">Failed to download image</string>
 </resources>

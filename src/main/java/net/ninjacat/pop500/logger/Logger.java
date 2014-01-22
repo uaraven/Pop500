@@ -6,10 +6,6 @@ import net.ninjacat.pop500.BuildConfig;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * User: raven
- * Date: 08.10.12
- */
 public class Logger {
     private static final String TAG = "Pop500";
     private static final String MSG_FORMAT = "[%s][%s]%s";

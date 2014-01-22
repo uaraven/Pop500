@@ -5,9 +5,6 @@ import net.ninjacat.pop500.api.callbacks.OnBitmapListener;
 
 import javax.inject.Inject;
 
-/**
- * Created on 21/01/14.
- */
 public class InMemoryImageCache implements ImageCache {
 
     private final LruImageCache cache;

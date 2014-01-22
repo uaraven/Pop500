@@ -1,7 +1,11 @@
 package net.ninjacat.pop500.api;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Handler;
+import android.widget.Toast;
 import com.google.common.base.Optional;
+import net.ninjacat.pop500.R;
 import net.ninjacat.pop500.api.callbacks.OnBitmapListener;
 import net.ninjacat.pop500.api.callbacks.OnJsonListener;
 import net.ninjacat.pop500.api.images.ImageCache;
@@ -15,26 +19,29 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created on 21/01/14.
- */
 public class StreamController {
 
     private static final int READ_AHEAD_THRESHOLD = 100;
-
     private final Api500Px api;
     private final PhotoCache cache;
     private final ImageCache imageCache;
     private final ImageRetriever imageRetriever;
+    private final Context context;
+    private final Handler handler;
     private final List<Integer> photoIds;
     private Optional<StreamUpdateListener> updateListener;
 
     @Inject
-    public StreamController(Api500Px api, PhotoCache cache, ImageCache imageCache, ImageRetriever imageRetriever) {
+    public StreamController(Api500Px api, PhotoCache cache, ImageCache imageCache,
+                            ImageRetriever imageRetriever,
+                            Context context,
+                            Handler handler) {
         this.api = api;
         this.cache = cache;
         this.imageCache = imageCache;
         this.imageRetriever = imageRetriever;
+        this.context = context;
+        this.handler = handler;
         this.photoIds = new ArrayList<Integer>(1000);
 
         this.updateListener = Optional.absent();
@@ -141,6 +148,15 @@ public class StreamController {
         photoIds.add(photo.getId());
     }
 
+    private void showFailureMessage(final int messageResourceId) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(context, messageResourceId, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private class JsonCallback implements OnJsonListener {
         @Override
         public void onSuccess(JSONObject result) {
@@ -150,6 +166,7 @@ public class StreamController {
         @Override
         public void onFailure(Exception fail) {
             Logger.error("[StreamController] Failed to load stream chunk", fail);
+            showFailureMessage(R.string.json_failed);
         }
     }
 
@@ -170,6 +187,7 @@ public class StreamController {
 
         @Override
         public void bitmapFailed(Throwable fail) {
+            showFailureMessage(R.string.image_failed);
             Logger.error("[StreamController] Failed to fetch bitmap from " + key, fail);
         }
     }

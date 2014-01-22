@@ -15,9 +15,6 @@ import net.ninjacat.yumi.Yumi;
 
 import javax.inject.Inject;
 
-/**
- * Created on 21/01/14.
- */
 @Layout(R.layout.photo_view)
 public class PhotoViewActivity extends Activity {
 
@@ -32,14 +29,13 @@ public class PhotoViewActivity extends Activity {
 
     @Inject
     private StreamController controller;
-    private Photo photoMeta;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupActivity();
 
-        photoMeta = getIntent().getParcelableExtra("photo");
+        Photo photoMeta = getIntent().getParcelableExtra("photo");
         initializeUi(photoMeta);
     }
 

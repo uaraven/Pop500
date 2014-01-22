@@ -9,10 +9,6 @@ import net.ninjacat.pop500.logger.Logger;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-/**
- * User: raven
- * Date: 05.10.12
- */
 public class BitmapDownloader implements Runnable {
 
     private final String source;
