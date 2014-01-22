@@ -24,17 +24,12 @@
             <groupId>net.ninjacat</groupId>
             <artifactId>yumi</artifactId>
             <version>1.0.0-SNAPSHOT</version>
-            <!--<scope>system</scope>
-            <systemPath>${project.basedir}/ext-lib/yumi-0.0.1.jar</systemPath>-->
         </dependency>
 
         <dependency>
             <groupId>org.microba</groupId>
             <artifactId>microba</artifactId>
             <version>1.0.0-SNAPSHOT</version>
-            <!--
-            <scope>system</scope>
-            <systemPath>${project.basedir}/ext-lib/microba-1.0.0-SNAPSHOT.jar</systemPath>-->
         </dependency>
 
         <!-- 3rd party -->
@@ -43,8 +38,6 @@
             <groupId>com.google.android</groupId>
             <artifactId>support-v4</artifactId>
             <version>r7</version>
-            <!--<scope>system</scope>
-            <systemPath>${project.basedir}/ext-lib/android-support-v4.jar</systemPath>-->
         </dependency>
 
         <dependency>
@@ -65,30 +58,6 @@
             <artifactId>guava</artifactId>
             <version>12.0</version>
         </dependency>
-
-        <!--test-->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.8.2</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.9.0</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!--robolectric-->
-        <dependency>
-            <groupId>org.robolectric</groupId>
-            <artifactId>robolectric</artifactId>
-            <version>2.2</version>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
 
     <build>
