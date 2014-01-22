@@ -9,22 +9,32 @@
     <packaging>apk</packaging>
     <name>Pop500</name>
 
+
+    <repositories>
+        <repository>
+            <id>ninjacat</id>
+            <url>http://ninjacat.net/mvn/</url>
+        </repository>
+    </repositories>
+
+
     <dependencies>
         <!--main-->
         <dependency>
             <groupId>net.ninjacat</groupId>
             <artifactId>yumi</artifactId>
-            <version>0.0.1</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/ext-lib/yumi-0.0.1.jar</systemPath>
+            <version>1.0.0-SNAPSHOT</version>
+            <!--<scope>system</scope>
+            <systemPath>${project.basedir}/ext-lib/yumi-0.0.1.jar</systemPath>-->
         </dependency>
 
         <dependency>
             <groupId>org.microba</groupId>
             <artifactId>microba</artifactId>
             <version>1.0.0-SNAPSHOT</version>
+            <!--
             <scope>system</scope>
-            <systemPath>${project.basedir}/ext-lib/microba-1.0.0-SNAPSHOT.jar</systemPath>
+            <systemPath>${project.basedir}/ext-lib/microba-1.0.0-SNAPSHOT.jar</systemPath>-->
         </dependency>
 
         <!-- 3rd party -->
