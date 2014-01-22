@@ -52,7 +52,7 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.refresh) {
+        if (item.getItemId() == R.id.back_to_top) {
             resetStream();
             return true;
         } else {
