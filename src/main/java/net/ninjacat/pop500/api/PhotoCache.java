@@ -7,7 +7,7 @@ import android.support.v4.util.LruCache;
  */
 public class PhotoCache extends LruCache<Integer, Photo> {
 
-    private static final int PHOTO_CACHE_SIZE = 100 * 1024;
+    private static final int PHOTO_CACHE_SIZE = 250 * 1024;
 
     public PhotoCache() {
         super(PHOTO_CACHE_SIZE);

@@ -1,27 +1,43 @@
 package net.ninjacat.pop500;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.GridView;
+import net.ninjacat.pop500.api.Photo;
+import net.ninjacat.yumi.AttachTo;
+import net.ninjacat.yumi.Layout;
+import net.ninjacat.yumi.Yumi;
 
+@Layout(R.layout.main)
 public class MainActivity extends Activity {
-    private AbsListView listView;
+
+    @AttachTo(R.id.stream)
+    private GridView stream;
     private PopularStreamAdapter adapter;
 
-    /**
-     * Called when the activity is first created.
-     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-
-        listView = (AbsListView) findViewById(R.id.photo_stream);
+        Yumi.injectActivity(this);
 
         adapter = new PopularStreamAdapter(PxApp.getApp().getInjector());
-        listView.setAdapter(adapter);
+        stream.setAdapter(adapter);
+
+        stream.setOnItemClickListener(new StreamItemClickListener());
     }
+
+    private class StreamItemClickListener implements AdapterView.OnItemClickListener {
+
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            Photo photo = adapter.getItem(i);
+            Intent photoView = new Intent(MainActivity.this, PhotoViewActivity.class);
+            photoView.putExtra("photo", photo);
+            startActivity(photoView);
+        }
+    }
+
 }

@@ -1,25 +1,39 @@
 package net.ninjacat.pop500.api;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
  * Created on 21/01/14.
  */
-public class Photo {
+public class Photo implements Parcelable {
+
+    public static final Creator<Photo> CREATOR = new Creator<Photo>() {
+        @Override
+        public Photo createFromParcel(Parcel parcel) {
+            return Photo.fromParcel(parcel);
+        }
+
+        @Override
+        public Photo[] newArray(int i) {
+            return new Photo[i];
+        }
+    };
 
     private final int id;
-    private final String photoName;
-    private final int category;
+    private final String caption;
     private final double rating;
     private final String url;
     private final String userName;
+    private final String description;
 
-    public Photo(int id, String photoName, int category, double rating, String url, String userName) throws JSONException {
+    private Photo(int id, String photoName, String description, double rating, String url, String userName) {
 
         this.id = id;
-        this.photoName = photoName;
-        this.category = category;
+        this.caption = photoName;
+        this.description = description;
         this.rating = rating;
         this.url = url;
         this.userName = userName;
@@ -28,21 +42,32 @@ public class Photo {
     public static Photo parse(JSONObject jsonPhoto) throws JSONException {
         int id = jsonPhoto.getInt("id");
         String photoName = jsonPhoto.getString("name");
-        int category = jsonPhoto.getInt("category");
+        String description = jsonPhoto.optString("description", "");
         double rating = jsonPhoto.getDouble("rating");
         String url = jsonPhoto.getString("image_url");
         JSONObject user = jsonPhoto.getJSONObject("user");
         String userName = user.getString("fullname");
 
-        return new Photo(id, photoName, category, rating, url, userName);
+        return new Photo(id, photoName, description, rating, url, userName);
+    }
+
+    public static Photo fromParcel(Parcel parcel) {
+        int id = parcel.readInt();
+        String photoName = parcel.readString();
+        String description = parcel.readString();
+        double rating = parcel.readDouble();
+        String url = parcel.readString();
+        String userName = parcel.readString();
+
+        return new Photo(id, photoName, description, rating, url, userName);
     }
 
     public int getId() {
         return id;
     }
 
-    public String getPhotoName() {
-        return photoName;
+    public String getCaption() {
+        return caption;
     }
 
     public double getRating() {
@@ -57,8 +82,8 @@ public class Photo {
         return userName;
     }
 
-    public int getCategory() {
-        return category;
+    public String getDescription() {
+        return description;
     }
 
     @Override
@@ -77,4 +102,20 @@ public class Photo {
     public int hashCode() {
         return id;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id);
+        parcel.writeString(caption);
+        parcel.writeString(description);
+        parcel.writeDouble(rating);
+        parcel.writeString(url);
+        parcel.writeString(userName);
+    }
+
 }

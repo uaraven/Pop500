@@ -122,7 +122,7 @@ public class PopularStreamAdapter extends BaseAdapter implements StreamUpdateLis
         }
 
         private void setPhotoInfoLine(Photo photo) {
-            photoName.setText(photo.getPhotoName());
+            photoName.setText(photo.getCaption());
             photoRating.setText(String.format("%4.1f", photo.getRating()));
         }
 

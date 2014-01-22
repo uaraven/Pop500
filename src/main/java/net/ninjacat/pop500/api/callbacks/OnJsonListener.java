@@ -1,6 +1,5 @@
 package net.ninjacat.pop500.api.callbacks;
 
-import net.ninjacat.pop500.PopularStreamAdapter;
 import org.json.JSONObject;
 
 /**

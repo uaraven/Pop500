@@ -129,6 +129,7 @@ public class StreamController {
             notifyStreamUpdate();
         } catch (JSONException e) {
             Logger.error("[StreamController] Response does not contain photos", e);
+            Logger.debug("[StreamController] JSON: %s", result);
         }
     }
 
