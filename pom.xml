@@ -5,7 +5,7 @@
 
     <groupId>net.ninjacat.pop500</groupId>
     <artifactId>pop500</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <packaging>apk</packaging>
     <name>Pop500</name>
 
@@ -43,8 +43,8 @@
             <groupId>com.google.android</groupId>
             <artifactId>support-v4</artifactId>
             <version>r7</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/ext-lib/android-support-v4.jar</systemPath>
+            <!--<scope>system</scope>
+            <systemPath>${project.basedir}/ext-lib/android-support-v4.jar</systemPath>-->
         </dependency>
 
         <dependency>
@@ -58,14 +58,6 @@
             <groupId>javax.inject</groupId>
             <artifactId>javax.inject</artifactId>
             <version>1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.android</groupId>
-            <artifactId>support-v4</artifactId>
-            <version>r7</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/ext-lib/android-support-v4.jar</systemPath>
         </dependency>
 
         <dependency>
