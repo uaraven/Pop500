@@ -2,4 +2,5 @@
 <resources>
     <string name="app_name">500px Popular</string>
     <string name="photo_desc">Photo</string>
+    <string name="refresh">Refresh</string>
 </resources>

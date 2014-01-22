@@ -43,6 +43,9 @@ public class Photo implements Parcelable {
         int id = jsonPhoto.getInt("id");
         String photoName = jsonPhoto.getString("name");
         String description = jsonPhoto.optString("description", "");
+        if ("null".equals(description)) {
+            description = "";
+        }
         double rating = jsonPhoto.getDouble("rating");
         String url = jsonPhoto.getString("image_url");
         JSONObject user = jsonPhoto.getJSONObject("user");

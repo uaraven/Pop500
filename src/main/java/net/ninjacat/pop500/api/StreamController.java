@@ -20,18 +20,8 @@ import java.util.List;
  */
 public class StreamController {
 
-    public static final OnBitmapListener DUMMY_LISTENER = new OnBitmapListener() {
-        @Override
-        public void bitmapAvailable(Bitmap bitmap) {
-
-        }
-
-        @Override
-        public void bitmapFailed(Throwable fail) {
-
-        }
-    };
     private static final int READ_AHEAD_THRESHOLD = 100;
+
     private final Api500Px api;
     private final PhotoCache cache;
     private final ImageCache imageCache;
@@ -71,6 +61,12 @@ public class StreamController {
 
     public void setListener(StreamUpdateListener streamUpdateListener) {
         updateListener = Optional.of(streamUpdateListener);
+    }
+
+    public void reset() {
+        cache.evictAll();
+        photoIds.clear();
+        notifyStreamUpdate();
     }
 
     private Optional<Photo> internalGetPhoto(int index) {

@@ -76,6 +76,10 @@ public class PopularStreamAdapter extends BaseAdapter implements StreamUpdateLis
         return new PhotoHolder(view);
     }
 
+    public void refresh() {
+        controller.reset();
+    }
+
     private StreamController createController(Injector injector) {
         StreamController controller = injector.get(StreamController.class);
         controller.setListener(this);
