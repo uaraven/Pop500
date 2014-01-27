@@ -9,7 +9,7 @@ Features
 
  - "Inifinite" ListAdapter. Only 4 bytes are permanently stored in memory for each image. Given that 'Popular' stream is about 15000 photos, that means that only 60k of memory is used.
  - Photo metadata is stored in LRU cache and loaded on demand.
- - Images are stored in LRU cache. About 1/3 of application memory is allocated for images. That allows cache to hold about 120 pictures my Nexus 4. Images are stored in RGB_555 format to lower memory consumption.
+ - Images are stored in LRU cache. About 1/3 of application memory is allocated for images. That allows cache to hold about 120 pictures on Nexus 4. Images are stored in RGB_555 format to lower memory consumption.
  - Both metadata and photos are prefetched for improved user expirience.
  
 
