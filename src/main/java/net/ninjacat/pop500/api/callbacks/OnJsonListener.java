@@ -5,5 +5,5 @@ import org.json.JSONObject;
 public interface OnJsonListener {
     void onSuccess(JSONObject result);
 
-    void onFailure(Exception fail);
+    void onFailure(Throwable fail);
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import net.ninjacat.pop500.config.modules.ApiModule;
 import net.ninjacat.pop500.config.modules.ImagesModule;
 import net.ninjacat.pop500.config.modules.Pop500Module;
+import net.ninjacat.pop500.config.modules.WebModule;
 import org.microba.core.Microba;
 import org.microba.core.MicrobaContext;
 import org.microba.core.binding.Binder;
@@ -20,6 +21,7 @@ public class Injector {
         new Pop500Module().configure(binder);
         new ApiModule().configure(binder);
         new ImagesModule(availableMemory).configure(binder);
+        new WebModule().configure(binder);
 
         injectionContext = Microba.createContext(binder);
     }

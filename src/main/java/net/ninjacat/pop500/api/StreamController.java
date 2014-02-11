@@ -164,7 +164,7 @@ public class StreamController {
         }
 
         @Override
-        public void onFailure(Exception fail) {
+        public void onFailure(Throwable fail) {
             Logger.error("[StreamController] Failed to load stream chunk", fail);
             showFailureMessage(R.string.json_failed);
         }

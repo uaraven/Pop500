@@ -1,11 +1,16 @@
 package net.ninjacat.pop500.api;
 
 import android.graphics.Bitmap;
+import net.ninjacat.drama.Actor;
+import net.ninjacat.drama.ActorRef;
+import net.ninjacat.drama.ActorSystem;
+import net.ninjacat.drama.Receiver;
 import net.ninjacat.pop500.api.callbacks.OnBitmapListener;
 import net.ninjacat.pop500.api.callbacks.OnJsonListener;
+import net.ninjacat.pop500.api.messages.JsonRequest;
+import net.ninjacat.pop500.api.messages.JsonResponse;
 import net.ninjacat.pop500.api.net.Access;
 import net.ninjacat.pop500.api.net.BitmapDownloader;
-import net.ninjacat.pop500.api.net.JsonDownloader;
 import net.ninjacat.pop500.logger.Logger;
 import org.json.JSONObject;
 
@@ -17,17 +22,20 @@ import java.util.concurrent.ExecutorService;
 
 public class Api500Px {
     public static final int PAGE_SIZE = 40;
-    private Set<Integer> pagesInProgress;
-    private Set<String> bitmapsInProgress;
-    private ExecutorService executorService;
-    private final ExecutorService jsonExecutorService;
+    private final ActorSystem actorSystem;
+    private final ActorRef jsonResponder;
+    private final Set<Integer> pagesInProgress;
+    private final Set<String> bitmapsInProgress;
+    private final ExecutorService executorService;
 
     @Inject
-    public Api500Px(ExecutorService executorService, @Queued ExecutorService jsonExecutorService) {
+    public Api500Px(ExecutorService executorService, ActorSystem actorSystem) {
         this.executorService = executorService;
-        this.jsonExecutorService = jsonExecutorService;
+        this.actorSystem = actorSystem;
         this.pagesInProgress = Collections.synchronizedSet(new HashSet<Integer>());
         this.bitmapsInProgress = Collections.synchronizedSet(new HashSet<String>());
+
+        jsonResponder = actorSystem.createActor(JsonResponseActor.class, "JsonResponder", pagesInProgress);
     }
 
     public void getPopularPhotos(final int pageNumber, final OnJsonListener callback) {
@@ -35,8 +43,8 @@ public class Api500Px {
             Logger.debug("[Api500px] Page %d already in download queue", pageNumber);
         } else {
             pagesInProgress.add(pageNumber);
-            jsonExecutorService.submit(new JsonDownloader(Access.getPage(pageNumber, PAGE_SIZE),
-                    new JsonDownloadListener(pageNumber, callback)));
+            actorSystem.tryTell("JsonService", new JsonRequest(pageNumber, Access.getPage(pageNumber, PAGE_SIZE), callback),
+                    jsonResponder);
         }
     }
 
@@ -47,6 +55,25 @@ public class Api500Px {
             Logger.debug("[Api500px] Starting images retrieval from %s", url);
             bitmapsInProgress.add(url);
             executorService.submit(new BitmapDownloader(url, new BitmapDownloadListener(url, callback)));
+        }
+    }
+
+    public static class JsonResponseActor extends Actor {
+
+        private final Set<Integer> pagesInProgress;
+
+        public JsonResponseActor(Set<Integer> pagesInProgress) {
+            this.pagesInProgress = pagesInProgress;
+        }
+
+        @Receiver
+        public void onResponse(ActorRef sender, JsonResponse response) {
+            pagesInProgress.remove(response.getPageNumber());
+            if (response.isFailure()) {
+                response.getListener().onFailure(response.getFail());
+            } else {
+                response.getListener().onSuccess(response.getJson());
+            }
         }
     }
 
@@ -66,7 +93,7 @@ public class Api500Px {
         }
 
         @Override
-        public void onFailure(Exception fail) {
+        public void onFailure(Throwable fail) {
             pagesInProgress.remove(pageNumber);
             chainedListener.onFailure(fail);
         }
