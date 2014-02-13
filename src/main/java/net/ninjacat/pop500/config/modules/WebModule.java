@@ -3,7 +3,6 @@ package net.ninjacat.pop500.config.modules;
 import net.ninjacat.drama.ActorSystem;
 import net.ninjacat.drama.ActorSystemFactory;
 import net.ninjacat.dws.DefaultContext;
-import net.ninjacat.dws.RestClient;
 import net.ninjacat.dws.WebService;
 import net.ninjacat.pop500.api.actors.BitmapApiResponseActor;
 import net.ninjacat.pop500.api.net.BitmapService;
@@ -17,8 +16,6 @@ public class WebModule implements InjectionModule {
     public void configure(Binder binder) {
         ActorSystem mainActorSystem = createMainActorSystem();
         binder.bind(ActorSystem.class).toInstance(mainActorSystem);
-
-        binder.bind(RestClient.class).toInstance(new RestClient(mainActorSystem));
     }
 
     private ActorSystem createMainActorSystem() {
