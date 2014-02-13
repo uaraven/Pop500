@@ -4,6 +4,8 @@ import net.ninjacat.drama.ActorRef;
 import net.ninjacat.drama.ActorSystem;
 import net.ninjacat.pop500.api.actors.BitmapApiResponseActor;
 import net.ninjacat.pop500.api.actors.JsonApiResponseActor;
+import net.ninjacat.pop500.api.callbacks.OnBitmapListener;
+import net.ninjacat.pop500.api.callbacks.OnJsonListener;
 import net.ninjacat.pop500.api.messages.BitmapRequest;
 import net.ninjacat.pop500.api.messages.JsonRequest;
 import net.ninjacat.pop500.api.net.Access;
@@ -32,7 +34,7 @@ public class Api500Px {
         bitmapResponder = actorSystem.createActor(BitmapApiResponseActor.class, "BitmapResponder", bitmapsInProgress);
     }
 
-    public void getPopularPhotos(final int pageNumber, final ActorRef caller) {
+    public void getPopularPhotos(final int pageNumber, final OnJsonListener caller) {
         if (pagesInProgress.contains(pageNumber)) {
             Logger.debug("[Api500px] Page %d already in download queue", pageNumber);
         } else {
@@ -41,7 +43,7 @@ public class Api500Px {
         }
     }
 
-    public void getImage(String url, ActorRef caller) {
+    public void getImage(String url, OnBitmapListener caller) {
         if (bitmapsInProgress.contains(url)) {
             Logger.debug("[Api500px] Bitmap %s is already in queue", url);
         } else {
@@ -51,11 +53,11 @@ public class Api500Px {
         }
     }
 
-    private BitmapRequest createBitmapRequest(String url, ActorRef caller) {
+    private BitmapRequest createBitmapRequest(String url, OnBitmapListener caller) {
         return new BitmapRequest(url, caller);
     }
 
-    private JsonRequest createJsonRequest(int pageNumber, ActorRef caller) {
+    private JsonRequest createJsonRequest(int pageNumber, OnJsonListener caller) {
         return new JsonRequest(pageNumber, Access.getPage(pageNumber, PAGE_SIZE), caller);
     }
 

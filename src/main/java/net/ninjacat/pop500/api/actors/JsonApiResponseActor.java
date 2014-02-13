@@ -18,6 +18,10 @@ public class JsonApiResponseActor extends Actor {
     @Receiver
     public void onResponse(ActorRef sender, JsonResponse response) {
         pagesInProgress.remove(response.getPageNumber());
-        response.getClient().tell(response);
+        if (response.isFailure()) {
+            response.getClient().onJsonFailed(response.getFail());
+        } else {
+            response.getClient().onJsonReceived(response.getJson());
+        }
     }
 }

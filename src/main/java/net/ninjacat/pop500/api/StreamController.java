@@ -5,11 +5,7 @@ import android.graphics.Bitmap;
 import android.os.Handler;
 import android.widget.Toast;
 import com.google.common.base.Optional;
-import net.ninjacat.drama.ActorRef;
-import net.ninjacat.drama.ActorSystem;
 import net.ninjacat.pop500.R;
-import net.ninjacat.pop500.api.actors.StreamBitmapActor;
-import net.ninjacat.pop500.api.actors.StreamJsonActor;
 import net.ninjacat.pop500.api.callbacks.OnBitmapListener;
 import net.ninjacat.pop500.api.callbacks.OnJsonListener;
 import net.ninjacat.pop500.api.images.ImageCache;
@@ -24,8 +20,6 @@ import java.util.List;
 
 public class StreamController {
 
-    private static final String STREAM_JSON = "StreamJson";
-    private static final String STREAM_BITMAP = "StreamBitmap";
     private static final int READ_AHEAD_THRESHOLD = 100;
 
     private final Api500Px api;
@@ -34,15 +28,14 @@ public class StreamController {
     private final Context context;
     private final Handler handler;
     private final List<Integer> photoIds;
-    private final ActorRef streamJsonActor;
-    private final ActorRef streamBitmapActor;
+    private final StreamBitmapCallback streamBitmapCallback;
+    private final StreamJsonCallback streamJsonCallback;
     private Optional<StreamUpdateListener> updateListener;
 
     @Inject
     public StreamController(Api500Px api,
                             PhotoCache cache,
                             ImageCache imageCache,
-                            ActorSystem actorSystem,
                             Context context,
                             Handler handler) {
         this.api = api;
@@ -54,8 +47,8 @@ public class StreamController {
 
         this.updateListener = Optional.absent();
 
-        streamJsonActor = actorSystem.createActor(StreamJsonActor.class, STREAM_JSON, new StreamJsonCallback());
-        streamBitmapActor = actorSystem.createActor(StreamBitmapActor.class, STREAM_BITMAP, new StreamBitmapCallback());
+        streamJsonCallback = new StreamJsonCallback();
+        streamBitmapCallback = new StreamBitmapCallback();
     }
 
     public Optional<Photo> getPhoto(int index) {
@@ -115,7 +108,7 @@ public class StreamController {
     }
 
     private void startBitmapRetrieval(Photo photo) {
-        api.getImage(photo.getUrl(), streamBitmapActor);
+        api.getImage(photo.getUrl(), streamBitmapCallback);
     }
 
     private void prefetchPageIfNeeded(int index) {
@@ -128,7 +121,7 @@ public class StreamController {
         int pageNo = index / Api500Px.PAGE_SIZE + 1;
         Logger.debug("[StreamController] Trying to get page %d", pageNo);
 
-        api.getPopularPhotos(pageNo, streamJsonActor);
+        api.getPopularPhotos(pageNo, streamJsonCallback);
     }
 
     private void processListOfPhotos(JSONObject result) {

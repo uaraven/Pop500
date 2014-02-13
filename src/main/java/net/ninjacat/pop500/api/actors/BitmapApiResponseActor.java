@@ -18,6 +18,10 @@ public class BitmapApiResponseActor extends Actor {
     @Receiver
     public void onResponse(ActorRef sender, BitmapResponse response) {
         bitmapsInProgress.remove(response.getUrl());
-        response.getClient().tell(response);
+        if (response.isFailure()) {
+            response.getClient().bitmapFailed(response.getFail());
+        } else {
+            response.getClient().bitmapAvailable(response.getUrl(), response.getBitmap());
+        }
     }
 }
