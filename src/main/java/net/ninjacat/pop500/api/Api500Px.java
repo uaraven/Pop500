@@ -18,38 +18,50 @@ import java.util.Set;
 
 public class Api500Px {
     public static final int PAGE_SIZE = 40;
-    private final ActorSystem actorSystem;
     private final ActorRef jsonResponder;
     private final ActorRef bitmapResponder;
     private final Set<Integer> pagesInProgress;
     private final Set<String> bitmapsInProgress;
+    private final ActorRef jsonService;
+    private final ActorRef bitmapService;
 
     @Inject
     public Api500Px(ActorSystem actorSystem) {
-        this.actorSystem = actorSystem;
         this.pagesInProgress = Collections.synchronizedSet(new HashSet<Integer>());
         this.bitmapsInProgress = Collections.synchronizedSet(new HashSet<String>());
+
+        jsonService = actorSystem.find("JsonService").get();
+        bitmapService = actorSystem.find("BitmapService").get();
 
         jsonResponder = actorSystem.createActor(JsonApiResponseActor.class, "JsonResponder", pagesInProgress);
         bitmapResponder = actorSystem.createActor(BitmapApiResponseActor.class, "BitmapResponder", bitmapsInProgress);
     }
 
     public void getPopularPhotos(final int pageNumber, final OnJsonListener caller) {
-        if (pagesInProgress.contains(pageNumber)) {
-            Logger.debug("[Api500px] Page %d already in download queue", pageNumber);
+        if (checkAndAdd(pageNumber, pagesInProgress)) {
+            jsonService.tell(createJsonRequest(pageNumber, caller), jsonResponder);
         } else {
-            pagesInProgress.add(pageNumber);
-            actorSystem.tryTell("JsonService", createJsonRequest(pageNumber, caller), jsonResponder);
+            Logger.debug("[Api500px] Page %d already in download queue", pageNumber);
         }
     }
 
     public void getImage(String url, OnBitmapListener caller) {
-        if (bitmapsInProgress.contains(url)) {
-            Logger.debug("[Api500px] Bitmap %s is already in queue", url);
-        } else {
+        if (checkAndAdd(url, bitmapsInProgress)) {
             Logger.debug("[Api500px] Starting images retrieval from %s", url);
-            bitmapsInProgress.add(url);
-            actorSystem.tryTell("BitmapService", createBitmapRequest(url, caller), bitmapResponder);
+            bitmapService.tell(createBitmapRequest(url, caller), bitmapResponder);
+        } else {
+            Logger.debug("[Api500px] Bitmap %s is already in queue", url);
+        }
+    }
+
+    private <T> boolean checkAndAdd(T item, final Set<T> set) {
+        synchronized (set) {
+            if (!set.contains(item)) {
+                set.add(item);
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
