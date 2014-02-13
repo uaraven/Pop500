@@ -3,6 +3,8 @@ Pop500
 
 Simple demo application that shows infinite 'Popular' stream from 500px.com.
 
+Okay, this was demo app for the interview for 500px. It didn't work out, so I decided to use it as a testbed for some of my pet projects.
+
 
 Features
 --------
