@@ -1,17 +1,17 @@
 package net.ninjacat.pop500.api.messages;
 
-import net.ninjacat.pop500.api.callbacks.OnJsonListener;
+import net.ninjacat.drama.ActorRef;
 import org.json.JSONObject;
 
 public final class JsonRequest {
     private final int pageNumber;
     private final String url;
-    private final OnJsonListener listener;
+    private final ActorRef client;
 
-    public JsonRequest(int pageNumber, String url, OnJsonListener listener) {
+    public JsonRequest(int pageNumber, String url, ActorRef client) {
         this.pageNumber = pageNumber;
         this.url = url;
-        this.listener = listener;
+        this.client = client;
     }
 
     public String getUrl() {
@@ -19,10 +19,10 @@ public final class JsonRequest {
     }
 
     public JsonResponse createResponse(JSONObject content) {
-        return JsonResponse.forSuccess(pageNumber, content, listener);
+        return JsonResponse.forSuccess(pageNumber, content, client);
     }
 
     public JsonResponse createResponse(Throwable ex) {
-        return JsonResponse.forFailure(pageNumber, ex, listener);
+        return JsonResponse.forFailure(pageNumber, ex, client);
     }
 }

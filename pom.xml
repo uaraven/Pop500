@@ -32,6 +32,12 @@
         </dependency>
 
         <dependency>
+            <groupId>net.ninjacat</groupId>
+            <artifactId>drama</artifactId>
+            <version>0.0.2</version>
+        </dependency>
+
+        <dependency>
             <groupId>net.ninjacat.drama</groupId>
             <artifactId>dramaticweb</artifactId>
             <version>1.0-SNAPSHOT</version>

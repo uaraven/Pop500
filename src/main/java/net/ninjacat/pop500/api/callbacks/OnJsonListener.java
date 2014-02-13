@@ -3,7 +3,7 @@ package net.ninjacat.pop500.api.callbacks;
 import org.json.JSONObject;
 
 public interface OnJsonListener {
-    void onSuccess(JSONObject result);
+    void onJsonReceived(JSONObject result);
 
-    void onFailure(Throwable fail);
+    void onJsonFailed(Throwable fail);
 }

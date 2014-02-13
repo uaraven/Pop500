@@ -4,6 +4,7 @@ import net.ninjacat.drama.Actor;
 import net.ninjacat.drama.ActorRef;
 import net.ninjacat.drama.Option;
 import net.ninjacat.drama.Receiver;
+import net.ninjacat.dws.WebService;
 import net.ninjacat.dws.http.GetMethod;
 import net.ninjacat.dws.http.HttpRequest;
 import net.ninjacat.dws.http.HttpResponse;
@@ -24,12 +25,12 @@ public class JsonService extends Actor {
     public void onRequest(ActorRef sender, JsonRequest request) {
         Logger.debug("[JsonService] Fetching json for %s", request.getUrl());
 
-        Option<ActorRef> webService = getActorSystem().find("WebService");
+        Option<ActorRef> webService = getActorSystem().find(WebService.DEFAULT_NAME);
         try {
             if (webService.isPresent()) {
                 sendRequest(sender, request, webService.get());
             } else {
-                Logger.debug("[JsonService] No 'WebService' found");
+                Logger.warn("[JsonService] No 'WebService' found");
             }
         } catch (MalformedURLException e) {
             Logger.error("[JsonService] Invalid URL: " + request.getUrl(), e);
@@ -67,7 +68,7 @@ public class JsonService extends Actor {
 
     private void sendRequest(ActorRef sender, JsonRequest request, ActorRef webService) throws MalformedURLException {
         HttpRequest httpRequest = new HttpRequest(new GetMethod(), new URL(request.getUrl()));
-        httpRequest.setSenderData(new OriginalData(sender, request));
+        httpRequest.setLocalData(new OriginalData(sender, request));
 
         webService.tell(httpRequest, getSelf());
     }

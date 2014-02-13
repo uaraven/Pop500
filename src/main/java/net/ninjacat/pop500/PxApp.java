@@ -2,7 +2,6 @@ package net.ninjacat.pop500;
 
 import android.app.ActivityManager;
 import android.app.Application;
-import android.content.Context;
 import net.ninjacat.pop500.config.Injector;
 import net.ninjacat.pop500.logger.Logger;
 

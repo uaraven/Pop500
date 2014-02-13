@@ -1,7 +1,6 @@
 package net.ninjacat.pop500.api.images;
 
 import android.graphics.Bitmap;
-import net.ninjacat.pop500.api.callbacks.OnBitmapListener;
 
 import javax.inject.Inject;
 

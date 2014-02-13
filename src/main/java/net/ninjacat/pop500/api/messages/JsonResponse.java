@@ -1,35 +1,35 @@
 package net.ninjacat.pop500.api.messages;
 
-import net.ninjacat.pop500.api.callbacks.OnJsonListener;
+import net.ninjacat.drama.ActorRef;
 import org.json.JSONObject;
 
 public final class JsonResponse {
     private final int pageNumber;
     private final JSONObject json;
-    private final OnJsonListener listener;
+    private final ActorRef client;
     private final Throwable fail;
 
-    public static JsonResponse forSuccess(int pageNumber, JSONObject json, OnJsonListener listener) {
-        return new JsonResponse(pageNumber, json, listener, null);
-    }
-
-    public static JsonResponse forFailure(int pageNumber, Throwable fail, OnJsonListener listener) {
-        return new JsonResponse(pageNumber, null, listener, fail);
-    }
-
-    private JsonResponse(int pageNumber, JSONObject json, OnJsonListener listener, Throwable fail) {
+    private JsonResponse(int pageNumber, JSONObject json, ActorRef client, Throwable fail) {
         this.pageNumber = pageNumber;
         this.json = json;
-        this.listener = listener;
+        this.client = client;
         this.fail = fail;
+    }
+
+    public static JsonResponse forSuccess(int pageNumber, JSONObject json, ActorRef client) {
+        return new JsonResponse(pageNumber, json, client, null);
+    }
+
+    public static JsonResponse forFailure(int pageNumber, Throwable fail, ActorRef client) {
+        return new JsonResponse(pageNumber, null, client, fail);
     }
 
     public int getPageNumber() {
         return pageNumber;
     }
 
-    public OnJsonListener getListener() {
-        return listener;
+    public ActorRef getClient() {
+        return client;
     }
 
     public JSONObject getJson() {

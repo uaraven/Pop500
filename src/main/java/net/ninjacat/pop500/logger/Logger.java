@@ -31,6 +31,14 @@ public class Logger {
         Log.e(TAG, formatMessage(text), e);
     }
 
+    public static void error(String text) {
+        Log.e(TAG, formatMessage(text));
+    }
+
+    public static void warn(String text, Object... params) {
+        Log.e(TAG, formatMessage(String.format(text, params)));
+    }
+
     public static void info(String text, Object... params) {
         Log.d(TAG, formatMessage(String.format(text, params)));
     }

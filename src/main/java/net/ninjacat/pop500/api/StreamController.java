@@ -5,11 +5,14 @@ import android.graphics.Bitmap;
 import android.os.Handler;
 import android.widget.Toast;
 import com.google.common.base.Optional;
+import net.ninjacat.drama.ActorRef;
+import net.ninjacat.drama.ActorSystem;
 import net.ninjacat.pop500.R;
+import net.ninjacat.pop500.api.actors.StreamBitmapActor;
+import net.ninjacat.pop500.api.actors.StreamJsonActor;
 import net.ninjacat.pop500.api.callbacks.OnBitmapListener;
 import net.ninjacat.pop500.api.callbacks.OnJsonListener;
 import net.ninjacat.pop500.api.images.ImageCache;
-import net.ninjacat.pop500.api.images.ImageRetriever;
 import net.ninjacat.pop500.logger.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,30 +24,38 @@ import java.util.List;
 
 public class StreamController {
 
+    private static final String STREAM_JSON = "StreamJson";
+    private static final String STREAM_BITMAP = "StreamBitmap";
     private static final int READ_AHEAD_THRESHOLD = 100;
+
     private final Api500Px api;
     private final PhotoCache cache;
     private final ImageCache imageCache;
-    private final ImageRetriever imageRetriever;
     private final Context context;
     private final Handler handler;
     private final List<Integer> photoIds;
+    private final ActorRef streamJsonActor;
+    private final ActorRef streamBitmapActor;
     private Optional<StreamUpdateListener> updateListener;
 
     @Inject
-    public StreamController(Api500Px api, PhotoCache cache, ImageCache imageCache,
-                            ImageRetriever imageRetriever,
+    public StreamController(Api500Px api,
+                            PhotoCache cache,
+                            ImageCache imageCache,
+                            ActorSystem actorSystem,
                             Context context,
                             Handler handler) {
         this.api = api;
         this.cache = cache;
         this.imageCache = imageCache;
-        this.imageRetriever = imageRetriever;
         this.context = context;
         this.handler = handler;
         this.photoIds = new ArrayList<Integer>(1000);
 
         this.updateListener = Optional.absent();
+
+        streamJsonActor = actorSystem.createActor(StreamJsonActor.class, STREAM_JSON, new StreamJsonCallback());
+        streamBitmapActor = actorSystem.createActor(StreamBitmapActor.class, STREAM_BITMAP, new StreamBitmapCallback());
     }
 
     public Optional<Photo> getPhoto(int index) {
@@ -104,7 +115,7 @@ public class StreamController {
     }
 
     private void startBitmapRetrieval(Photo photo) {
-        imageRetriever.retrieveBitmap(photo.getUrl(), new BitmapDownloadCallback(photo.getUrl()));
+        api.getImage(photo.getUrl(), streamBitmapActor);
     }
 
     private void prefetchPageIfNeeded(int index) {
@@ -117,11 +128,15 @@ public class StreamController {
         int pageNo = index / Api500Px.PAGE_SIZE + 1;
         Logger.debug("[StreamController] Trying to get page %d", pageNo);
 
-        api.getPopularPhotos(pageNo, new JsonCallback());
+        api.getPopularPhotos(pageNo, streamJsonActor);
     }
 
     private void processListOfPhotos(JSONObject result) {
         try {
+            if (result.has("error")) {
+                showFailureMessage(result.getString("error"));
+            }
+
             JSONArray photoArray = result.getJSONArray("photos");
 
             int length = photoArray.length();
@@ -157,29 +172,32 @@ public class StreamController {
         });
     }
 
-    private class JsonCallback implements OnJsonListener {
+    private void showFailureMessage(final String message) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private class StreamJsonCallback implements OnJsonListener {
         @Override
-        public void onSuccess(JSONObject result) {
+        public void onJsonReceived(JSONObject result) {
             processListOfPhotos(result);
         }
 
         @Override
-        public void onFailure(Throwable fail) {
+        public void onJsonFailed(Throwable fail) {
             Logger.error("[StreamController] Failed to load stream chunk", fail);
             showFailureMessage(R.string.json_failed);
         }
     }
 
-    private class BitmapDownloadCallback implements OnBitmapListener {
-
-        private final String key;
-
-        public BitmapDownloadCallback(String key) {
-            this.key = key;
-        }
+    private class StreamBitmapCallback implements OnBitmapListener {
 
         @Override
-        public void bitmapAvailable(Bitmap bitmap) {
+        public void bitmapAvailable(String key, Bitmap bitmap) {
             Logger.debug("[StreamController] Bitmap loaded from %s", key);
             imageCache.storeBitmap(key, bitmap);
             notifyStreamUpdate();
@@ -188,7 +206,7 @@ public class StreamController {
         @Override
         public void bitmapFailed(Throwable fail) {
             showFailureMessage(R.string.image_failed);
-            Logger.error("[StreamController] Failed to fetch bitmap from " + key, fail);
+            Logger.error("[StreamController] Failed to fetch bitmap", fail);
         }
     }
 }
